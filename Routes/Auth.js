@@ -6,12 +6,9 @@ const authRouter = Router();
 
 authRouter.get("/", (req, res) => {
   const authUrl = nylasClient.auth.urlForOAuth2({
-    clientId: nylasConfig.clientId, // Note this is *different* from your API key. Make sure to put these in environment variables
-    redirectUri: nylasConfig.callbackUri, // URI you registered with Nylas in the previous step
+    clientId: nylasConfig.clientId, 
+    redirectUri: nylasConfig.callbackUri,
   });
-
-  // This is one way to redirect the user to the auth screen. Depending on your architecture you may want to pass
-  // the url back to your frontend for redirection, that's up to you
   res.redirect(authUrl);
 });
 
@@ -28,22 +25,17 @@ authRouter.get("/exchange", async (req, res) => {
     const filePath = "data.json";
     const response = await nylasClient.auth.exchangeCodeForToken({
       clientSecret: nylasConfig.apiKey,
-      clientId: nylasConfig.clientId, // Note this is *different* from your API key
-      redirectUri: nylasConfig.callbackUri, // URI you registered with Nylas in the previous step
+      clientId: nylasConfig.clientId, 
+      redirectUri: nylasConfig.callbackUri, 
       code,
     });
     const { grantId, email } = response;
     console.log(response);
-
-    // You'll use this grantId to make API calls to Nylas perform actions on
-    // behalf of this account. Store this in a database, associated with a user
     console.log(response.grantId);
     const newObject = { grantId: grantId, email: email };
     let fileContent = fs.existsSync(filePath)
       ? fs.readFileSync(filePath, "utf8")
       : "[]";
-
-    // Step 2: Parse the content as JSON
     let dataArray = JSON.parse(fileContent);
 
     if (!Array.isArray(dataArray)) {
