@@ -1,29 +1,34 @@
-import Express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import 'dotenv/config'
+import Express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import "dotenv/config";
+import colors from "colors";
+
+colors.enable();
 const app = Express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(Express.json());
 
-app.use(morgan('dev'));
-
+app.use(morgan("dev"));
 
 const nylasConfig = {
-    clientId: process.env.CLIENT_ID,
-    apiKey: process.env.API_KEY,
-    apiUri: process.env.API_URI,
-}
+  clientId: process.env.CLIENT_ID,
+  apiKey: process.env.API_KEY,
+  apiUri: process.env.API_URI,
+};
 
+const PORT = process.env.PORT || 3000;
 
+app.get("/", (req, res) => {
+  console.log("Home Route".blue);
+  res.send("Hello World");
+});
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
-    }
-);
-
-
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-    }
-);
+app.listen(PORT, () => {
+  console.log("Server is running on port 3000".green.bold);
+});
