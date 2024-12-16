@@ -13,13 +13,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@huggingface/inference": "^2.8.1",
     "axios": "^1.7.9",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "html-pdf-node": "^1.0.8",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
-    "nylas": "^7.7.2"
+    "nylas": "^7.7.2",
+    "openai": "^4.76.3",
+    "pdfkit": "^0.15.2"
   }
 }
