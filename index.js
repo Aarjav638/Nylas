@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import "dotenv/config";
 import colors from "colors";
+import Nylas from "nylas";
 
 colors.enable();
 const app = Express();
@@ -21,6 +22,11 @@ const nylasConfig = {
   apiKey: process.env.API_KEY,
   apiUri: process.env.API_URI,
 };
+
+const nylasClient = new Nylas({
+  apiKey: nylasConfig.apiKey,
+  apiUri: nylasConfig.apiUri,
+});
 
 const PORT = process.env.PORT || 3000;
 
