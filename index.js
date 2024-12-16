@@ -15,7 +15,6 @@ const nylasConfig = {
     apiUri: process.env.API_URI,
 }
 
-console.log(nylasConfig);
 
 
 app.get('/', (req, res) => {
