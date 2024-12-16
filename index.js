@@ -3,8 +3,8 @@ import cors from "cors";
 import morgan from "morgan";
 import "dotenv/config";
 import colors from "colors";
-import Nylas from "nylas";
 import authRouter from "./Routes/Auth.js";
+import emailRouter from "./Routes/Email.js";
 colors.enable();
 const app = Express();
 app.use(
@@ -17,17 +17,10 @@ app.use(Express.json());
 
 app.use(morgan("dev"));
 
-const nylasConfig = {
-  clientId: process.env.CLIENT_ID,
-  apiKey: process.env.API_KEY,
-  callbackUri: process.env.CALLBACK_URL,
-  apiUri: process.env.API_URI,
-};
+app.use("/nylas/email", emailRouter);
 
-const nylasClient = new Nylas({
-  apiKey: nylasConfig.apiKey,
-  apiUri: nylasConfig.apiUri
-});
+// Route to initialize authentication
+app.use("/nylas/auth", authRouter);
 
 const PORT = process.env.PORT || 3000;
 
