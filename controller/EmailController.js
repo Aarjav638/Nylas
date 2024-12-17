@@ -1,5 +1,5 @@
 import { nylasClient } from "../constants/nylas.js";
-import { getGrantId,processEmails,classifyEmails } from "../utils/helpers.js";
+import { getGrantId, processEmails, classifyEmails } from "../utils/helpers.js";
 
 // Recent Email Controller
 
@@ -9,7 +9,7 @@ const RecentEmail = async (req, res) => {
 
     const messages = await nylasClient.messages.list({
       identifier: grantId,
-      queryParams: { limit: 10},
+      queryParams: { limit: 10 },
     });
 
     const filteredMessages = await classifyEmails(messages);
@@ -18,7 +18,9 @@ const RecentEmail = async (req, res) => {
       await processEmails(filteredMessages);
     }
 
-    res.send({ message: `${filteredMessages.length} email(s) processed successfully!` });
+    res.send({
+      message: `${filteredMessages.length} email(s) processed successfully!`,
+    });
   } catch (error) {
     console.error("Error processing emails:", error);
     res.status(500).send("An error occurred while processing emails.");

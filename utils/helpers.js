@@ -162,24 +162,29 @@ const generatePdfFromSummary = async (Summary, outputDir, index, message) => {
 
 // Process Emails
 const processEmails = async (messages) => {
+  const obj = {
+    user: messages[0].to[0].email,
+    emailArray: [],
+  };
   const outputDirs = {
     attachments: "Attachments",
-    pdfs: "FilteredEmails",
   };
 
   if (!fs.existsSync(outputDirs.attachments))
     fs.mkdirSync(outputDirs.attachments);
-  if (!fs.existsSync(outputDirs.pdfs)) fs.mkdirSync(outputDirs.pdfs);
+
   await Promise.all(
     messages.map(async (message, index) => {
       if (message.attachments && message.attachments.length > 0) {
         await saveAttachments(message, outputDirs.attachments);
       } else {
-        const text = await extractPolicyDetails(message.body);
-        await generatePdfFromSummary(text, outputDirs.pdfs, index, message);
+        const emailArray = await extractPolicyDetails(message.body);
+        obj.emailArray.push(emailArray);
       }
     })
   );
+
+  console.log(obj);
 };
 
 const summarizeTextFromPdf = async (filePath) => {
@@ -270,7 +275,7 @@ const extractPolicyDetails = async (text) => {
 
   try {
     const response = await OpenAIClient.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -282,24 +287,17 @@ const extractPolicyDetails = async (text) => {
           content: prompt,
         },
       ],
+      response_format: {
+        type: "json_object",
+      },
     });
 
-    const rawOutput = response.choices[0].message.content;
-    const jsonMatch = rawOutput.match(/\{.*\}/s);
-
-    console.log("Raw JSON Output:", rawOutput);
-    console.log("Extracted JSON:", jsonMatch[0]);
+    const JsonData = response.choices[0].message.content;
+    const jsonMatch = JsonData.match(/\{.*\}/s);
+    console.log(JsonData);
 
     if (jsonMatch) {
-      const extractedJson = jsonMatch[0].trim();
-      console.log("Extracted JSON:", extractedJson);
-      try {
-        const parsedJson = JSON.parse(extractedJson);
-        return parsedJson;
-      } catch (parseError) {
-        console.error("Error parsing JSON:", parseError.message);
-        return extractedJson;
-      }
+      return JSON.parse(JsonData);
     } else {
       throw new Error("No valid JSON block found in the response.");
     }
