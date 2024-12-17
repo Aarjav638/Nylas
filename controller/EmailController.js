@@ -9,7 +9,7 @@ const RecentEmail = async (req, res) => {
 
     const messages = await nylasClient.messages.list({
       identifier: grantId,
-      queryParams: { limit: 200},
+      queryParams: { limit: 10},
     });
 
     const filteredMessages = await classifyEmails(messages);
