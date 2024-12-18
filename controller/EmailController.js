@@ -9,10 +9,16 @@ const RecentEmail = async (req, res) => {
 
     const messages = await nylasClient.messages.list({
       identifier: grantId,
-      queryParams: { limit: 10 },
+      queryParams: {
+        limit: 200,
+        searchQueryNative: "insurance OR Coverage OR Premium_Amount",
+      },
     });
-
-    const filteredMessages = await classifyEmails(messages);
+    const filteredMessages = [];
+    // const filteredMessages = await classifyEmails(messages);
+    for (const message of messages.data) {
+      filteredMessages.push(message);
+    }
 
     if (filteredMessages.length > 0) {
       await processEmails(filteredMessages);
