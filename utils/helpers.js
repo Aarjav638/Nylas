@@ -29,6 +29,7 @@ const getGrantId = async (Email) => {
     console.error(`${error}`.red);
   }
 };
+
 // Classify Emails using Hugging Face Inference
 const classifyEmails = async (messages) => {
   const filteredMessages = [];
